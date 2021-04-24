@@ -32,9 +32,9 @@ def process_data(config, folder_name):
         srv_data = da.from_array(deinterleave_IQ(svrInputFile[:-offset]),
                                  chunks=(config['input_chunk_length']//2,))
     elif offset < 0:
-        ref_data = da.from_array(deinterleave_IQ(refInputFile[:-offset]),
+        ref_data = da.from_array(deinterleave_IQ(refInputFile[:offset]),
                                  chunks=(config['input_chunk_length']//2,))
-        srv_data = da.from_array(deinterleave_IQ(svrInputFile[offset:]),
+        srv_data = da.from_array(deinterleave_IQ(svrInputFile[-offset:]),
                                  chunks=(config['input_chunk_length']//2,))
     else:
         ref_data = da.from_array(deinterleave_IQ(refInputFile),
