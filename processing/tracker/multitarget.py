@@ -62,8 +62,8 @@ def multitarget_track_and_plot(config, xambg, image_path):
     tracker_doppler[tracker_status_confirmed_idx] = np.nan
 
     fig = plt.figure(figsize=(16, 10))
-    plt.xlim(left=-100, right=100)
-    plt.ylim(bottom=0, top=8)
+    plt.xlim(left=-50, right=50)
+    plt.ylim(bottom=0, top=5)
     plt.scatter(tracker_doppler, tracker_range, marker='.')
     plt.axis('off')
     plt.savefig(image_path + ".jpeg", dpi=200, bbox_inches='tight',
@@ -71,8 +71,8 @@ def multitarget_track_and_plot(config, xambg, image_path):
     plt.close()
 
     fig = plt.figure(figsize=(16, 10))
-    plt.xlim(left=-100, right=100)
-    plt.ylim(bottom=0, top=8)
+    plt.xlim(left=-50, right=50)
+    plt.ylim(bottom=0, top=5)
     plt.scatter(tracker_doppler, tracker_range, marker='.')
     plt.savefig(image_path + "_labeled.jpeg", dpi=200)
     plt.close()

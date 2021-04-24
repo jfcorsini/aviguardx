@@ -13,6 +13,9 @@ def normalize(x):
 def deinterleave_IQ(interleavedIQ):
     '''convert interleaved IQ samples to complex64'''
     interleavedIQ = np.asarray(interleavedIQ)
+    if len(interleavedIQ) % 2 != 0:
+        interleavedIQ = np.resize(interleavedIQ, interleavedIQ.size - 1)
+
     return interleavedIQ.astype(np.float32).view(np.complex64)
 
 
@@ -45,7 +48,4 @@ def preprocess_kerberossdr_input(arr):
         mask), np.flatnonzero(~mask), arr[~mask])
 
     # Clip data to avoid having overflow when multiplying too big numbers
-    arr = np.clip(arr, -1e+10, 1e+10)
-    if len(arr) % 2 != 0:
-        return np.resize(arr, arr.size - 1)
-    return arr
+    return np.clip(arr, -1e+10, 1e+10)
