@@ -1,0 +1,16 @@
+name: radar-env
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - dask
+  - matplotlib
+  - numpy
+  - pip
+  - pyyaml
+  - scipy
+  - tqdm
+  - zarr
+  - pytorch
+  - torchvision
