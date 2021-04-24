@@ -45,4 +45,7 @@ def preprocess_kerberossdr_input(arr):
         mask), np.flatnonzero(~mask), arr[~mask])
 
     # Clip data to avoid having overflow when multiplying too big numbers
-    return np.clip(arr, -1e+10, 1e+10)
+    arr = np.clip(arr, -1e+10, 1e+10)
+    if len(arr) % 2 != 0:
+        return np.resize(arr, arr.size - 1)
+    return arr

@@ -25,11 +25,6 @@ def process_data(config, folder_name):
 
     offset = find_channel_offset(refc1, srvc1, 1, 5000000)
 
-    print('Offset', offset)
-
-    refc1 = deinterleave_IQ(refc1)
-    srvc1 = deinterleave_IQ(srvc1)
-
     # Convert to dask array after de-interleave IQ samples
     if offset > 0:
         ref_data = da.from_array(deinterleave_IQ(refInputFile[offset:]),
@@ -47,7 +42,6 @@ def process_data(config, folder_name):
         srv_data = da.from_array(deinterleave_IQ(svrInputFile),
                                  chunks=(config['input_chunk_length']//2,))
 
-    print(f"Successfully loaded data.")
     print(f"Corrected a sample offset of {offset} samples between channels")
 
     # trim the data to an integer number of block lengths
