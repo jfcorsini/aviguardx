@@ -28,7 +28,7 @@ def run_prediction(image_path, show=False):
         print('Open Error! Try again!')
     else:
         r_image, coordinates = frcnn.detect_image(image)
-        r_image.save("predicted_img.jpg")
+        r_image.save('./results/' + image_path + '_predicted.jpeg')
         if show:
             r_image.show()
 
