@@ -11,7 +11,7 @@ from math import pi, cos, sin
 # https://stackoverflow.com/questions/10952060/plot-ellipse-with-matplotlib-pyplot-python
 
 color = 'mediumturquoise'
-img = Image.open("map.jpg")
+img = Image.open("visualization/map.jpg")
 (X, Y) = img.size
 
 receive_x = 390
