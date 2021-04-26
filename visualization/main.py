@@ -37,7 +37,7 @@ def draw_partial_elipse(rad_x, rad_y, start, stop):
     return Ell_rot
 
 
-def main(bistatic_range, doppler_shift):
+def main(bistatic_range, doppler_shift, output_name):
     dpi = 50
     figsize = X / float(dpi), Y / float(dpi)
     figure, ax = plt.subplots(figsize=figsize)
@@ -70,9 +70,9 @@ def main(bistatic_range, doppler_shift):
     line.set_xdata(x_ell)
     line.set_ydata(y_ell)
     figure.canvas.draw()
-    plt.show()
+    plt.savefig('/results/' + output_name + '_map.jpg')
+    plt.close()
     ax.clear()
-    sleep(2)
 
 
 def visualize(coordinates, output_name):
@@ -96,8 +96,8 @@ def visualize(coordinates, output_name):
     freq_km = (freq_pixel / 24.8) - 50.0
     range_km = (range_pixel / 1540.0) * 5.0
 
-    return main(range_km, freq_km)
+    return main(range_km, freq_km, output_name)
 
 
 if __name__ == '__main__':
-    main(1.5, 0)
+    main(1.5, 0, 'map_position')
