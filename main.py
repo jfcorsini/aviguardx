@@ -33,8 +33,12 @@ def main():
     elif param == 'ui':
         return visualize([])
     else:
-        print('Parameter ' + param + ' is not implemented.')
-        print('Use either ML, gnuradio, process or ui')
+        output_name = param
+        print('Starting to process filename=' + output_name)
+        read_from_antennas(output_name)
+        run_processing(output_name)
+        coordinates = run_prediction(output_name)
+        visualize(coordinates)
 
 
 if __name__ == '__main__':
