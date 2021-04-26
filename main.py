@@ -15,7 +15,7 @@ def main():
             print('Starting to process filename=' + timestamp)
             read_from_antennas(timestamp)
             run_processing(timestamp)
-            coordinates = run_prediction(output_name)
+            coordinates = run_prediction(timestamp)
             visualize(coordinates)
         return
 
