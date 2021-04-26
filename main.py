@@ -16,7 +16,7 @@ def main():
             read_from_antennas(timestamp)
             run_processing(timestamp)
             coordinates = run_prediction(timestamp)
-            visualize(coordinates)
+            visualize(coordinates, timestamp)
         return
 
     output_name = str(int(time.time() * 1000))
@@ -31,14 +31,14 @@ def main():
     elif param == 'process':
         return run_processing(output_name)
     elif param == 'ui':
-        return visualize([])
+        return visualize([], output_name)
     else:
         output_name = param
         print('Starting to process filename=' + output_name)
         read_from_antennas(output_name)
         run_processing(output_name)
         coordinates = run_prediction(output_name)
-        visualize(coordinates)
+        visualize(coordinates, output_name)
 
 
 if __name__ == '__main__':
