@@ -2,6 +2,7 @@ import numpy as np
 import zarr
 import dask.array as da
 import scipy.signal as signal
+import gc
 
 from processing.passiveRadar.signal_utils import find_channel_offset, \
     deinterleave_IQ, preprocess_kerberossdr_input
@@ -24,6 +25,9 @@ def process_data(config, folder_name):
     srvc1 = svrInputFile[0:20*config['cpi_samples']]
 
     offset = find_channel_offset(refc1, srvc1, 1, 5000000)
+    del refc1
+    del srvc1
+    gc.collect()
 
     # Convert to dask array after de-interleave IQ samples
     if offset > 0:
@@ -43,6 +47,9 @@ def process_data(config, folder_name):
                                  chunks=(config['input_chunk_length']//2,))
 
     print(f"Corrected a sample offset of {offset} samples between channels")
+    del refInputFile
+    del svrInputFile
+    gc.collect()
 
     # trim the data to an integer number of block lengths
     N_chunks_ref = ref_data.shape[0] // (config['input_chunk_length']//2)
