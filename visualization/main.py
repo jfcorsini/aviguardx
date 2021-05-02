@@ -89,7 +89,7 @@ def visualize(coordinates, output_name):
         print('More than one drone found. Using first one only')
 
     coord = coordinates[0]
-    if len(coordinates) != 4:
+    if len(coord) != 4:
         print('Something is wrong with the coordinates', coord)
         return
 
