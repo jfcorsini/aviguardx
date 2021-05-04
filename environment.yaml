@@ -4,6 +4,8 @@ channels:
   - pytorch
   - defaults
 dependencies:
+  - boto3
+  - requests
   - dask
   - matplotlib
   - numpy
