@@ -13,7 +13,7 @@ SECRET = 'SECRET-HERE'
 
 
 def process_loop():
-    timestamp = str(int(time.time() * 1000))
+    timestamp = str(int(time.time()))
     print('Starting to process filename=' + timestamp)
     update_status('READING')
     read_from_antennas(timestamp)
@@ -36,7 +36,7 @@ def main():
                 print('Error on main loop', e)
         return
 
-    output_name = str(int(time.time() * 1000))
+    output_name = str(int(time.time()))
     if len(sys.argv) > 2:
         output_name = sys.argv[2]
 
@@ -95,8 +95,7 @@ def upload_entry(name):
     tracked_url = upload_file(name + '_labeled.jpeg')
     predicted_url = upload_file(name + '_predicted.jpeg')
     map_url = upload_file(name + '_map.jpeg')
-    formated_date = datetime.datetime.fromtimestamp(
-        int(name/1000)).strftime('%c')
+    formated_date = datetime.datetime.fromtimestamp(name).strftime('%c')
     data = {
         "map_url": map_url,
         "tracked_url": tracked_url,
