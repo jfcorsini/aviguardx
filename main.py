@@ -41,6 +41,10 @@ def main():
         return run_processing(output_name)
     elif param == 'ui':
         return visualize([], output_name)
+    elif param == 'do':
+        return run_processing(output_name)
+        coordinates = run_prediction(output_name)
+        visualize(coordinates, output_name)
     else:
         output_name = param
         print('Starting to process filename=' + output_name)
