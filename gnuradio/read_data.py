@@ -145,6 +145,10 @@ def main(top_block_cls=top_block, options=None):
     tb.start()
 
     tb.wait()
+    time.sleep(10)
+    tb.stop()
+    tb.wait()
+    sys.exit(0)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 from FRCNN_predict.predict import run_prediction
-from gnuradio.main import read_from_antennas
+#from gnuradio.main import read_from_antennas
+from gnuradio.read_data import main as read_from_antennas
 from processing.main import run_processing
 from visualization.main import visualize
 import boto3
