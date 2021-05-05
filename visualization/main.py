@@ -73,7 +73,7 @@ def main(bistatic_range, doppler_shift, output_name):
     line.set_xdata(x_ell)
     line.set_ydata(y_ell)
     figure.canvas.draw()
-    plt.savefig(image_path)
+    plt.savefig(image_path, dpi=200)
     plt.close()
     ax.clear()
 
@@ -84,7 +84,7 @@ def visualize(coordinates, output_name):
     if len(coordinates) < 1:
         plt.imshow(img)  # map of Otaniemi
         plt.axis('off')
-        plt.savefig(image_path)
+        plt.savefig(image_path, dpi=200)
         return
 
     if len(coordinates) > 1:
