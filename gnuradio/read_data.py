@@ -18,6 +18,7 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 import osmosdr
 import time
+import os
 
 
 class top_block(gr.top_block):
@@ -144,7 +145,7 @@ def main(top_block_cls=top_block, options=None):
     tb.start()
 
     try:
-        input('Press Enter to quit: ')
+        time.sleep(5)
     except EOFError:
         pass
     tb.stop()
