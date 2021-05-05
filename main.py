@@ -11,21 +11,28 @@ import time
 SECRET = 'SECRET-HERE'
 
 
+def process_loop():
+    timestamp = str(int(time.time() * 1000))
+    print('Starting to process filename=' + timestamp)
+    update_status('READING')
+    read_from_antennas(timestamp)
+    update_status('TRACKING')
+    run_processing(timestamp)
+    update_status('IDENTIFYING')
+    coordinates = run_prediction(timestamp)
+    visualize(coordinates, timestamp)
+    upload_entry(timestamp)
+
+
 def main():
     # If no extra parameters provided, enter in infinite loop to process
     if len(sys.argv) < 2:
         print('Processing in infinite loop. Press Ctrl + C to stop')
         while(True):
-            timestamp = str(int(time.time() * 1000))
-            print('Starting to process filename=' + timestamp)
-            update_status('READING')
-            read_from_antennas(timestamp)
-            update_status('TRACKING')
-            run_processing(timestamp)
-            update_status('IDENTIFYING')
-            coordinates = run_prediction(timestamp)
-            visualize(coordinates, timestamp)
-            upload_entry(timestamp)
+            try:
+                process_loop()
+            except e:
+                print('Error on main loop', e)
         return
 
     output_name = str(int(time.time() * 1000))
@@ -64,7 +71,7 @@ def update_status(status):
     return
 
 
-def upload_file(file_name, bucket):
+def upload_file(file_name):
     bucket = 'aviguardx'
     file_path = os.path.join(os.getcwd(), "results", file_name)
 
