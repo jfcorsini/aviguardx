@@ -102,7 +102,7 @@ def upload_entry(name):
         "predicted_url": predicted_url,
         "simple_tracked_url": simple_tracked_url,
         "name": name,
-        "recorded_at": datetime.datetime.now().isoformat(),
+        "recorded_at": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
         "jsonData": "{}",
         "secret": SECRET
     }
