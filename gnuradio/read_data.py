@@ -143,6 +143,7 @@ def main(top_block_cls=top_block, options=None):
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+    tb.wait()
 
     try:
         input('Running GNURadio script...\n')
