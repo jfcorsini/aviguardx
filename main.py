@@ -32,7 +32,7 @@ def main():
         while(True):
             try:
                 process_loop()
-            except e:
+            except Exception as e:
                 print('Error on main loop', e)
         return
 
@@ -86,7 +86,7 @@ def upload_file(file_name):
             ExtraArgs={'ACL': 'public-read'})
         print('Response upload file', response)
         return "https://aviguardx.s3.eu-north-1.amazonaws.com/{0}".format(file_name)
-    except e:
+    except Exception as e:
         print('Error to upload file', e)
         return ""
 
