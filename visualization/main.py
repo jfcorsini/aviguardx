@@ -68,7 +68,8 @@ def main(bistatic_range, doppler_shift, output_name):
         linewidth=5, foreground='lightseagreen', alpha=0.7), pe.Normal()], color=color, alpha=0.7)
     plt.grid(color='lightgray', linestyle='--')
 
-    image_path = os.path.join(os.getcwd(), "results", output_name) + '_map.jpg'
+    image_path = os.path.join(os.getcwd(), "results",
+                              output_name) + '_map.jpeg'
     line.set_xdata(x_ell)
     line.set_ydata(y_ell)
     figure.canvas.draw()
@@ -78,7 +79,8 @@ def main(bistatic_range, doppler_shift, output_name):
 
 
 def visualize(coordinates, output_name):
-    image_path = os.path.join(os.getcwd(), "results", output_name) + '_map.jpg'
+    image_path = os.path.join(os.getcwd(), "results",
+                              output_name) + '_map.jpeg'
     if len(coordinates) < 1:
         plt.imshow(img)  # map of Otaniemi
         plt.axis('off')
