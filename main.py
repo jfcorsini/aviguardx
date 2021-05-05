@@ -84,7 +84,6 @@ def upload_file(file_name):
             bucket,
             file_name,
             ExtraArgs={'ACL': 'public-read'})
-        print('Response upload file', response)
         return "https://aviguardx.s3.eu-north-1.amazonaws.com/{0}".format(file_name)
     except Exception as e:
         print('Error to upload file', e)
