@@ -95,12 +95,14 @@ def upload_entry(name):
     tracked_url = upload_file(name + '_labeled.jpeg')
     predicted_url = upload_file(name + '_predicted.jpeg')
     map_url = upload_file(name + '_map.jpeg')
+    formated_date = datetime.datetime.fromtimestamp(
+        int(name/1000)).strftime('%c')
     data = {
         "map_url": map_url,
         "tracked_url": tracked_url,
         "predicted_url": predicted_url,
         "simple_tracked_url": simple_tracked_url,
-        "name": name,
+        "name": formated_date,
         "recorded_at": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
         "jsonData": "{}",
         "secret": SECRET
