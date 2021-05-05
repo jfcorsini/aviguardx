@@ -144,11 +144,6 @@ def main(top_block_cls=top_block, options=None):
 
     tb.start()
 
-    try:
-        input('Running GNURadio script')
-    except EOFError:
-        pass
-    tb.stop()
     tb.wait()
 
 
