@@ -95,7 +95,7 @@ def upload_entry(name):
     tracked_url = upload_file(name + '_labeled.jpeg')
     predicted_url = upload_file(name + '_predicted.jpeg')
     map_url = upload_file(name + '_map.jpeg')
-    formated_date = datetime.datetime.fromtimestamp(name).strftime('%c')
+    formated_date = datetime.datetime.fromtimestamp(int(name)).strftime('%c')
     data = {
         "map_url": map_url,
         "tracked_url": tracked_url,
