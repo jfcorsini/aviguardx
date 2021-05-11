@@ -20,8 +20,8 @@ def process_loop():
     update_status('TRACKING')
     run_processing(timestamp)
     update_status('IDENTIFYING')
-    coordinates = run_prediction(timestamp)
-    visualize(coordinates, timestamp)
+    predictions = run_prediction(timestamp)
+    visualize(predictions, timestamp)
     upload_entry(timestamp)
 
 
@@ -50,16 +50,16 @@ def main():
     elif param == 'ui':
         return visualize([], output_name)
     elif param == 'do':
-        return run_processing(output_name)
-        coordinates = run_prediction(output_name)
-        visualize(coordinates, output_name)
+        run_processing(output_name)
+        predictions = run_prediction(output_name)
+        visualize(predictions, output_name)
     else:
         output_name = param
         print('Starting to process filename=' + output_name)
         read_from_antennas(output_name)
         run_processing(output_name)
-        coordinates = run_prediction(output_name)
-        visualize(coordinates, output_name)
+        predictions = run_prediction(output_name)
+        visualize(predictions, output_name)
 
 
 def update_status(status):

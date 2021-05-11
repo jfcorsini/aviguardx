@@ -80,19 +80,21 @@ def main(bistatic_range, doppler_shift, output_name, show=False):
     ax.clear()
 
 
-def visualize(coordinates, output_name):
+def visualize(predictions, output_name):
     image_path = os.path.join(os.getcwd(), "results",
                               output_name) + '_map.jpeg'
-    if len(coordinates) < 1:
+    if len(predictions) < 1:
         plt.imshow(img)  # map of Otaniemi
         plt.axis('off')
         plt.savefig(image_path, dpi=200)
         return
 
-    if len(coordinates) > 1:
-        print('More than one drone found. Using first one only')
+    print('All predictions', predictions)
+    drone_predictions = [
+        p for p in predictions if p['predicted_class'] == 'drone']
+    prediction_highest_score = max(drone_predictions, key=lambda x: x['score'])
 
-    coord = coordinates[0]
+    coord = prediction_highest_score['coordinates']
     if len(coord) != 4:
         print('Something is wrong with the coordinates', coord)
         return
