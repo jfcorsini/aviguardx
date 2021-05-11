@@ -4,7 +4,6 @@ import math
 import os
 import time
 
-import cv2
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
@@ -12,8 +11,8 @@ import torch.nn as nn
 from PIL import Image, ImageDraw, ImageFont
 from torch.nn import functional as F
 
-from nets.frcnn import FasterRCNN
-from utils.utils import DecodeBox, get_new_img_size, loc2bbox, nms
+from FRCNN_predict.nets.frcnn import FasterRCNN
+from FRCNN_predict.utils.utils import DecodeBox, get_new_img_size, loc2bbox, nms
 
 
 #--------------------------------------------#
@@ -21,12 +20,12 @@ from utils.utils import DecodeBox, get_new_img_size, loc2bbox, nms
 #--------------------------------------------#
 class FRCNN(object):
     _defaults = {
-        "model_path"    : 'model_data/my_voc_weights_resnet.pth',
-        "classes_path"  : 'model_data/voc_classes.txt',
-        "confidence"    : 0.5,
-        "iou"           : 0.3,
-        "backbone"      : "resnet50",
-        "cuda"          : False,
+        "model_path": 'FRCNN_predict/model_data/my_voc_weights_resnet.pth',
+        "classes_path": 'FRCNN_predict/model_data/voc_classes.txt',
+        "confidence": 0.5,
+        "iou": 0.3,
+        "backbone": "resnet50",
+        "cuda": False,
     }
 
     @classmethod
@@ -45,11 +44,12 @@ class FRCNN(object):
         self.generate()
 
         self.mean = torch.Tensor([0, 0, 0, 0]).repeat(self.num_classes+1)[None]
-        self.std = torch.Tensor([0.1, 0.1, 0.2, 0.2]).repeat(self.num_classes+1)[None]
+        self.std = torch.Tensor([0.1, 0.1, 0.2, 0.2]).repeat(
+            self.num_classes+1)[None]
         if self.cuda:
             self.mean = self.mean.cuda()
             self.std = self.std.cuda()
-            
+
         self.decodebox = DecodeBox(self.std, self.mean, self.num_classes)
 
     #---------------------------------------------------#
@@ -74,14 +74,15 @@ class FRCNN(object):
         #-------------------------------#
         #   Load model and weights
         #-------------------------------#
-        self.model = FasterRCNN(self.num_classes,"predict",backbone=self.backbone).eval()
+        self.model = FasterRCNN(
+            self.num_classes, "predict", backbone=self.backbone).eval()
         print('Loading weights into state dict...')
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         state_dict = torch.load(self.model_path, map_location=device)
         self.model.load_state_dict(state_dict)
-        
+
         if self.cuda:
-            os.environ["CUDA_VISIBLE_DEVICES"]="0" 
+            os.environ["CUDA_VISIBLE_DEVICES"] = "0"
             # self.model = nn.DataParallel(self.model)
             self.model = self.model.cuda()
 
@@ -94,7 +95,7 @@ class FRCNN(object):
         self.colors = list(
             map(lambda x: (int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)),
                 self.colors))
-    
+
     #---------------------------------------------------#
     #   Detection picture
     #---------------------------------------------------#
@@ -103,15 +104,14 @@ class FRCNN(object):
         image_shape = np.array(np.shape(image)[0:2])
         old_width, old_height = image_shape[1], image_shape[0]
         old_image = copy.deepcopy(image)
-        
 
-        width,height = get_new_img_size(old_width, old_height)
-        image = image.resize([width,height], Image.BICUBIC)
+        width, height = get_new_img_size(old_width, old_height)
+        image = image.resize([width, height], Image.BICUBIC)
 
         #-----------------------------------------------------------#
         #   Picture preprocessing, normalization.
         #-----------------------------------------------------------#
-        photo = np.transpose(np.array(image,dtype = np.float32)/255, (2, 0, 1))
+        photo = np.transpose(np.array(image, dtype=np.float32)/255, (2, 0, 1))
         # coordinates = []
         prediction = []
         with torch.no_grad():
@@ -123,27 +123,28 @@ class FRCNN(object):
             #-------------------------------------------------------------#
             #   Use the prediction result of the classifier to decode the suggestion box to obtain the prediction box
             #-------------------------------------------------------------#
-            outputs = self.decodebox.forward(roi_cls_locs[0], roi_scores[0], rois, height = height, width = width, nms_iou = self.iou, score_thresh = self.confidence)
+            outputs = self.decodebox.forward(
+                roi_cls_locs[0], roi_scores[0], rois, height=height, width=width, nms_iou=self.iou, score_thresh=self.confidence)
             #---------------------------------------------------------#
             #   If no object is detected, return to the original image
             #---------------------------------------------------------#
-            if len(outputs)==0:
-                return old_image,prediction
+            if len(outputs) == 0:
+                return old_image, prediction
             outputs = np.array(outputs)
-            bbox = outputs[:,:4]
+            bbox = outputs[:, :4]
             label = outputs[:, 4]
             conf = outputs[:, 5]
 
             bbox[:, 0::2] = (bbox[:, 0::2]) / width * old_width
             bbox[:, 1::2] = (bbox[:, 1::2]) / height * old_height
 
-        font = ImageFont.truetype(font='model_data/simhei.ttf',size=np.floor(3e-2 * np.shape(image)[1] + 0.5).astype('int32'))
+        font = ImageFont.truetype(font='model_data/simhei.ttf',
+                                  size=np.floor(3e-2 * np.shape(image)[1] + 0.5).astype('int32'))
 
-        thickness = max((np.shape(old_image)[0] + np.shape(old_image)[1]) // old_width * 2, 1)
-
+        thickness = max(
+            (np.shape(old_image)[0] + np.shape(old_image)[1]) // old_width * 2, 1)
 
         image = old_image
-
 
         for i, c in enumerate(label):
             predicted_class = self.class_names[int(c)]
@@ -157,18 +158,21 @@ class FRCNN(object):
 
             top = max(0, np.floor(top + 0.5).astype('int32'))
             left = max(0, np.floor(left + 0.5).astype('int32'))
-            bottom = min(np.shape(image)[0], np.floor(bottom + 0.5).astype('int32'))
-            right = min(np.shape(image)[1], np.floor(right + 0.5).astype('int32'))
+            bottom = min(np.shape(image)[0], np.floor(
+                bottom + 0.5).astype('int32'))
+            right = min(np.shape(image)[1], np.floor(
+                right + 0.5).astype('int32'))
 
-            prediction.append({'predicted_class':predicted_class,'score':score,'coordinates':[left, top, right, bottom]})
-
+            prediction.append({'predicted_class': predicted_class,
+                               'score': score, 'coordinates': [left, top, right, bottom]})
 
             label = '{} {:.2f}'.format(predicted_class, score)
             draw = ImageDraw.Draw(image)
             label_size = draw.textsize(label, font)
             label = label.encode('utf-8')
-            print('label and score:', label, 'coordinates:', top, left, bottom, right)
-            
+            print('label and score:', label,
+                  'coordinates:', top, left, bottom, right)
+
             if top - label_size[1] >= 0:
                 text_origin = np.array([left, top - label_size[1]])
             else:
@@ -181,7 +185,8 @@ class FRCNN(object):
             draw.rectangle(
                 [tuple(text_origin), tuple(text_origin + label_size)],
                 fill=self.colors[int(c)])
-            draw.text(text_origin, str(label,'UTF-8'), fill=(0, 0, 0), font=font)
+            draw.text(text_origin, str(label, 'UTF-8'),
+                      fill=(0, 0, 0), font=font)
             del draw
 
         return image, prediction
