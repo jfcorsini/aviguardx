@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import colorsys
 import copy
 import math
@@ -18,11 +16,7 @@ from FRCNN_predict.utils.utils import DecodeBox, get_new_img_size, loc2bbox, nms
 
 
 #--------------------------------------------#
-#   使用自己训练好的模型预测需要修改2个参数
-#   model_path和classes_path都需要修改！
-#   如果出现shape不匹配
-#   一定要注意训练时的NUM_CLASSES、
-#   model_path和classes_path参数的修改
+#   model_path and classes_path
 #--------------------------------------------#
 class FRCNN(object):
     _defaults = {
@@ -42,7 +36,7 @@ class FRCNN(object):
             return "Unrecognized attribute name '" + n + "'"
 
     #---------------------------------------------------#
-    #   初始化faster RCNN
+    #   initialize faster RCNN
     #---------------------------------------------------#
     def __init__(self, **kwargs):
         self.__dict__.update(self._defaults)
@@ -59,7 +53,7 @@ class FRCNN(object):
         self.decodebox = DecodeBox(self.std, self.mean, self.num_classes)
 
     #---------------------------------------------------#
-    #   获得所有的分类
+    #   Get all categories
     #---------------------------------------------------#
     def _get_class(self):
         classes_path = os.path.expanduser(self.classes_path)
@@ -69,16 +63,16 @@ class FRCNN(object):
         return class_names
 
     #---------------------------------------------------#
-    #   载入模型
+    #   Load model
     #---------------------------------------------------#
     def generate(self):
         #-------------------------------#
-        #   计算总的类的数量
+        #   Calculate the total number of classes
         #-------------------------------#
         self.num_classes = len(self.class_names)
 
         #-------------------------------#
-        #   载入模型与权值
+        #   Load model and weights
         #-------------------------------#
         self.model = FasterRCNN(
             self.num_classes, "predict", backbone=self.backbone).eval()
@@ -94,7 +88,7 @@ class FRCNN(object):
 
         print('{} model, anchors, and classes loaded.'.format(self.model_path))
 
-        # 画框设置不同的颜色
+        # Set different colors for the picture frame
         hsv_tuples = [(x / len(self.class_names), 1., 1.)
                       for x in range(len(self.class_names))]
         self.colors = list(map(lambda x: colorsys.hsv_to_rgb(*x), hsv_tuples))
@@ -103,7 +97,7 @@ class FRCNN(object):
                 self.colors))
 
     #---------------------------------------------------#
-    #   检测图片
+    #   Detection picture
     #---------------------------------------------------#
     def detect_image(self, image):
 
@@ -111,17 +105,15 @@ class FRCNN(object):
         old_width, old_height = image_shape[1], image_shape[0]
         old_image = copy.deepcopy(image)
 
-        #---------------------------------------------------------#
-        #   给原图像进行resize，resize到短边为600的大小上
-        #---------------------------------------------------------#
         width, height = get_new_img_size(old_width, old_height)
         image = image.resize([width, height], Image.BICUBIC)
 
         #-----------------------------------------------------------#
-        #   图片预处理，归一化。
+        #   Picture preprocessing, normalization.
         #-----------------------------------------------------------#
         photo = np.transpose(np.array(image, dtype=np.float32)/255, (2, 0, 1))
-        coordinates = []
+        # coordinates = []
+        prediction = []
         with torch.no_grad():
             images = torch.from_numpy(np.asarray([photo]))
             if self.cuda:
@@ -129,15 +121,15 @@ class FRCNN(object):
 
             roi_cls_locs, roi_scores, rois, _ = self.model(images)
             #-------------------------------------------------------------#
-            #   利用classifier的预测结果对建议框进行解码，获得预测框
+            #   Use the prediction result of the classifier to decode the suggestion box to obtain the prediction box
             #-------------------------------------------------------------#
             outputs = self.decodebox.forward(
                 roi_cls_locs[0], roi_scores[0], rois, height=height, width=width, nms_iou=self.iou, score_thresh=self.confidence)
             #---------------------------------------------------------#
-            #   如果没有检测出物体，返回原图
+            #   If no object is detected, return to the original image
             #---------------------------------------------------------#
             if len(outputs) == 0:
-                return old_image, coordinates
+                return old_image, prediction
             outputs = np.array(outputs)
             bbox = outputs[:, :4]
             label = outputs[:, 4]
@@ -146,13 +138,14 @@ class FRCNN(object):
             bbox[:, 0::2] = (bbox[:, 0::2]) / width * old_width
             bbox[:, 1::2] = (bbox[:, 1::2]) / height * old_height
 
-        font = ImageFont.truetype(font='FRCNN_predict/model_data/simhei.ttf',
+        font = ImageFont.truetype(font='model_data/simhei.ttf',
                                   size=np.floor(3e-2 * np.shape(image)[1] + 0.5).astype('int32'))
 
         thickness = max(
             (np.shape(old_image)[0] + np.shape(old_image)[1]) // old_width * 2, 1)
 
         image = old_image
+
         for i, c in enumerate(label):
             predicted_class = self.class_names[int(c)]
             score = conf[i]
@@ -170,9 +163,9 @@ class FRCNN(object):
             right = min(np.shape(image)[1], np.floor(
                 right + 0.5).astype('int32'))
 
-            coordinates.append([left, top, right, bottom])
+            prediction.append({'predicted_class': predicted_class,
+                               'score': score, 'coordinates': [left, top, right, bottom]})
 
-            # 画框框
             label = '{} {:.2f}'.format(predicted_class, score)
             draw = ImageDraw.Draw(image)
             label_size = draw.textsize(label, font)
@@ -196,4 +189,4 @@ class FRCNN(object):
                       fill=(0, 0, 0), font=font)
             del draw
 
-        return image, coordinates
+        return image, prediction

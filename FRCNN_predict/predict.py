@@ -13,26 +13,28 @@ P.S.
 2. If you want to intercept the target, you can use the obtained top, left, bottom, right to intercept the original image.
 '''
 
+from FRCNN_predict.frcnn import FRCNN
+from PIL import Image
+
+frcnn = FRCNN()
+
 
 def run_prediction(image_path, show=False):
-    # Import is done inside to avoid errors if computer does not have torch installed
-    from FRCNN_predict.frcnn import FRCNN
-    from PIL import Image
-
     image = Image.open('./results/' + image_path + '.jpeg')
 
-    frcnn = FRCNN()
     try:
         image = image.convert("RGB")
     except:
         print('Open Error! Try again!')
     else:
-        r_image, coordinates = frcnn.detect_image(image)
+        r_image, prediction = frcnn.detect_image(image)
         r_image.save('./results/' + image_path + '_predicted.jpeg')
         if show:
             r_image.show()
+        if len(prediction) == 0:
+            print("No object")
+        else:
+            print('left, top, right, bottom coordinates:')
+            print(prediction)
 
-        print('left, top, right, bottom coordinates:')
-        print(coordinates)
-
-        return coordinates
+        return prediction
