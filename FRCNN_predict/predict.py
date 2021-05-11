@@ -13,31 +13,28 @@ P.S.
 2. If you want to intercept the target, you can use the obtained top, left, bottom, right to intercept the original image.
 '''
 
-from frcnn import FRCNN
+from FRCNN_predict.frcnn import FRCNN
 from PIL import Image
-
-img = Image.open('./circulating.jpg')
-# img.show()
-print(img)
 
 frcnn = FRCNN()
 
 
-print(img)
-try:
-    image = img
-    image = image.convert("RGB")
-except:
-    print('Open Error! Try again!')
-    # continue
-else:
-    r_image, prediction = frcnn.detect_image(image)
-    r_image.save("predicted_img.jpg")
-    if len(prediction)==0:
-        print("No object")
+def run_prediction(image_path, show=False):
+    image = Image.open('./results/' + image_path + '.jpeg')
+
+    try:
+        image = image.convert("RGB")
+    except:
+        print('Open Error! Try again!')
     else:
-        print('left, top, right, bottom coordinates:')
-        print(prediction)
-        r_image.show()
+        r_image, prediction = frcnn.detect_image(image)
+        r_image.save('./results/' + image_path + '_predicted.jpeg')
+        if show:
+            r_image.show()
+        if len(prediction) == 0:
+            print("No object")
+        else:
+            print('left, top, right, bottom coordinates:')
+            print(prediction)
 
-
+        return prediction
