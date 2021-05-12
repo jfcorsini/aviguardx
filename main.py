@@ -53,6 +53,15 @@ def main():
         run_processing(output_name)
         predictions = run_prediction(output_name)
         visualize(predictions, output_name)
+    elif param == 'process_multiple':
+        to_process = list(range(1, 51))
+        for folder_name in to_process:
+            folder_name = str(folder_name)
+            # read_from_antennas(folder_name)
+            run_processing(folder_name)
+            predictions = run_prediction(folder_name)
+            visualize(predictions, folder_name)
+            upload_entry(folder_name)
     else:
         output_name = param
         print('Starting to process filename=' + output_name)
