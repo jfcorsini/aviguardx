@@ -53,6 +53,7 @@ def main():
         run_processing(output_name)
         predictions = run_prediction(output_name)
         visualize(predictions, output_name)
+        upload_entry(output_name)
     elif param == 'process_multiple':
         to_process = list(range(1, 51))
         for folder_name in to_process:
