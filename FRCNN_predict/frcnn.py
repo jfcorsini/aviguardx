@@ -138,7 +138,7 @@ class FRCNN(object):
             bbox[:, 0::2] = (bbox[:, 0::2]) / width * old_width
             bbox[:, 1::2] = (bbox[:, 1::2]) / height * old_height
 
-        font = ImageFont.truetype(font='model_data/simhei.ttf',
+        font = ImageFont.truetype(font='FRCNN_predict/model_data/simhei.ttf',
                                   size=np.floor(3e-2 * np.shape(image)[1] + 0.5).astype('int32'))
 
         thickness = max(
