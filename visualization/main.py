@@ -102,14 +102,20 @@ def visualize(predictions, output_name):
         print('Something is wrong with the coordinates', coord)
         return
 
-    freq_pixel = coord[2] - coord[0]
-    range_pixel = coord[3] - coord[1]
+    [left, top, right, bottom] = coord
+    # Take position in the middle between left and right coordinate
+    freq_pixel = left + ((right - left) / 2)
 
-    freq_km = (freq_pixel / 24.8) - 50.0
-    range_km = (range_pixel / 1540.0) * 5.0
+    # Take position in the middle between top and bottom coordinate
+    range_pixel = bottom + ((top - bottom)/2)
+
+    # Predicted image has 2480px of width and frequency starts in -50
+    freq_km = ((freq_pixel / 2480.0) * 100.0) - 50.0
+    # Predicted image has 1540px of height and position starts in 0
+    range_km = ((range_pixel / 1540.0) * 5.0)
 
     return main(range_km, freq_km, output_name)
 
 
 if __name__ == '__main__':
-    main(1.5, 0, 'map_position', True)
+    main(2.5, 0, 'map_position', True)
