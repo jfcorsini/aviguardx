@@ -15,6 +15,9 @@ color = 'mediumturquoise'
 img = Image.open("visualization/map.jpg")
 (X, Y) = img.size
 
+dpi = 50
+figsize = X / float(dpi), Y / float(dpi)
+
 receive_x = 390
 receive_y = 437
 
@@ -39,8 +42,6 @@ def draw_partial_elipse(rad_x, rad_y, start, stop):
 
 
 def main(bistatic_range, doppler_shift, output_name, show=False):
-    dpi = 50
-    figsize = X / float(dpi), Y / float(dpi)
     figure, ax = plt.subplots(figsize=figsize)
 
     transform_x = 193.65
@@ -73,7 +74,7 @@ def main(bistatic_range, doppler_shift, output_name, show=False):
     line.set_xdata(x_ell)
     line.set_ydata(y_ell)
     figure.canvas.draw()
-    plt.savefig(image_path, dpi=200)
+    plt.savefig(image_path)
     if show:
         plt.show()
     plt.close()
@@ -84,9 +85,11 @@ def visualize(predictions, output_name):
     image_path = os.path.join(os.getcwd(), "results",
                               output_name) + '_map.jpeg'
     if len(predictions) < 1:
+        figure, ax = plt.subplots(figsize=figsize)
         plt.imshow(img)  # map of Otaniemi
         plt.axis('off')
-        plt.savefig(image_path, dpi=200)
+        figure.canvas.draw()
+        plt.savefig(image_path)
         return
 
     print('All predictions', predictions)
