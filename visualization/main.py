@@ -11,7 +11,7 @@ from math import pi, cos, sin
 
 # https://stackoverflow.com/questions/10952060/plot-ellipse-with-matplotlib-pyplot-python
 
-color = 'mediumturquoise'
+color = 'red'
 img = Image.open("visualization/map.jpg")
 (X, Y) = img.size
 
@@ -66,7 +66,7 @@ def main(bistatic_range, doppler_shift, output_name, show=False):
     plt.imshow(img)  # map of Otaniemi
     plt.axis('off')
     line, = ax.plot(x_ell, y_ell, lw=2, path_effects=[pe.Stroke(
-        linewidth=5, foreground='lightseagreen', alpha=0.7), pe.Normal()], color=color, alpha=0.7)
+        linewidth=3, alpha=0.7), pe.Normal()], color=color, alpha=0.7)
     plt.grid(color='lightgray', linestyle='--')
 
     image_path = os.path.join(os.getcwd(), "results",
