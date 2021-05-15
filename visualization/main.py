@@ -74,7 +74,8 @@ def main(bistatic_range, doppler_shift, output_name, show=False):
     line.set_xdata(x_ell)
     line.set_ydata(y_ell)
     figure.canvas.draw()
-    plt.savefig(image_path)
+    plt.savefig(image_path, dpi=dpi, bbox_inches='tight',
+                transparent=True, pad_inches=0)
     if show:
         plt.show()
     plt.close()
@@ -89,7 +90,8 @@ def visualize(predictions, output_name):
         plt.imshow(img)  # map of Otaniemi
         plt.axis('off')
         figure.canvas.draw()
-        plt.savefig(image_path)
+        plt.savefig(image_path, dpi=dpi, bbox_inches='tight',
+                    transparent=True, pad_inches=0)
         return
 
     print('All predictions', predictions)
@@ -97,6 +99,7 @@ def visualize(predictions, output_name):
         p for p in predictions if p['predicted_class'] == 'drone']
     prediction_highest_score = max(drone_predictions, key=lambda x: x['score'])
 
+    print('prediction_highest_score', prediction_highest_score)
     coord = prediction_highest_score['coordinates']
     if len(coord) != 4:
         print('Something is wrong with the coordinates', coord)
@@ -113,9 +116,13 @@ def visualize(predictions, output_name):
     freq_km = ((freq_pixel / 2480.0) * 100.0) - 50.0
     # Predicted image has 1540px of height and position starts in 0
     range_km = ((range_pixel / 1540.0) * 5.0)
+    print('freq_km', freq_km)
+    print('range_km', range_km)
 
     return main(range_km, freq_km, output_name)
 
 
 if __name__ == '__main__':
+    # visualize([{'predicted_class': 'drone', 'score': 0.5523254, 'coordinates': [952, 351, 1097, 517]}, {
+    #           'predicted_class': 'drone', 'score': 0.5361574, 'coordinates': [1122, 1042, 1449, 1205]}], 'foo')
     main(2.5, 0, 'map_position', True)
