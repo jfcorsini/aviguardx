@@ -114,8 +114,8 @@ def visualize(predictions, output_name):
 
     # Predicted image has 2480px of width and frequency starts in -50
     freq_km = ((freq_pixel / 2480.0) * 100.0) - 50.0
-    # Predicted image has 1540px of height and position starts in 0
-    range_km = ((range_pixel / 1540.0) * 5.0)
+    # Predicted image has 1540px of height. Prediction returns pixel value from top (0km) to bottom (5km)
+    range_km = 5.0 - ((range_pixel / 1540.0) * 5.0)
     print('freq_km', freq_km)
     print('range_km', range_km)
 
