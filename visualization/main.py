@@ -11,24 +11,24 @@ from math import pi, cos, sin
 
 # https://stackoverflow.com/questions/10952060/plot-ellipse-with-matplotlib-pyplot-python
 
-color = 'red'
-img = Image.open("visualization/map.jpg")
+color = 'crimson'
+img = Image.open("visualization/map.png")
 (X, Y) = img.size
 
 dpi = 50
 figsize = X / float(dpi), Y / float(dpi)
 
-receive_x = 390
-receive_y = 437
+receive_x = 567
+receive_y = 803
 
-trans_x = -1662.698
-trans_y = receive_y + 78.3
+trans_x = -4101.3
+trans_y = 986.14
 
 center_x = (trans_x + receive_x) / 2  # x-position of the center
 center_y = (trans_y + receive_y) / 2  # y-position of the center
 
 # t_rot=0      #rotation angle
-t_rot = -2.5 / 180 * pi  # rotation angle
+t_rot = -2 / 180 * pi  # rotation angle
 
 
 def draw_partial_elipse(rad_x, rad_y, start, stop):
@@ -44,30 +44,32 @@ def draw_partial_elipse(rad_x, rad_y, start, stop):
 def main(bistatic_range, doppler_shift, output_name, show=False):
     figure, ax = plt.subplots(figsize=figsize)
 
-    transform_x = 193.65
+    transform_x = 440.4
 
     c = 5.3  # [km] distance from center to Rx
     x = bistatic_range * transform_x
     c = c * transform_x
 
-    rad_x = (x + 2 * c) / 2
-    rad_y = math.sqrt(rad_x * rad_x - c * c)
+    rad_x = (x + 2 * c) / 2 - 0.15*c
+    rad_y = math.sqrt(rad_x * rad_x - c * c) - 0.1*c
 
-    start = math.degrees(math.atan(x / c)) + 3 - 13
-    stop = math.degrees(math.atan(x / c)) + 18 - 13
+    start = math.degrees(math.atan(x / c)) + 3 - 18
+    stop = math.degrees(math.atan(x / c)) + 18 - 18
 
     Ell_rot = draw_partial_elipse(
         rad_x, rad_y, -start * pi / 180, -stop * pi / 180)
     x_ell = center_x + Ell_rot[0, :]
     y_ell = center_y + Ell_rot[1, :]
 
-    plt.plot(receive_x, receive_y, 'x', color=color, markersize=7)
+    plt.plot(receive_x, receive_y, 'x', color='salmon', markersize=20,markeredgewidth=12, alpha=0.7)
+    plt.plot(receive_x, receive_y, 'x', color=color, markersize=15, markeredgewidth=6, alpha=0.7)
 
     plt.imshow(img)  # map of Otaniemi
     plt.axis('off')
-    line, = ax.plot(x_ell, y_ell, lw=2, path_effects=[pe.Stroke(
-        linewidth=3, alpha=0.7), pe.Normal()], color=color, alpha=0.7)
+    line, = ax.plot(x_ell, y_ell, lw=10, path_effects=[pe.Stroke(
+        linewidth =20, foreground='salmon', alpha = 0.7), pe.Normal()], color=color, alpha=0.7)
     plt.grid(color='lightgray', linestyle='--')
+
 
     image_path = os.path.join(os.getcwd(), "results",
                               output_name) + '_map.jpeg'
