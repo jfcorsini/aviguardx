@@ -22,7 +22,7 @@ def process_loop():
     update_status('IDENTIFYING')
     predictions = run_prediction(timestamp)
     visualize(predictions, timestamp)
-    upload_entry(timestamp)
+    upload_entry(timestamp, len(predictions) > 0)
 
 
 def main():
@@ -53,7 +53,7 @@ def main():
         run_processing(output_name)
         predictions = run_prediction(output_name)
         visualize(predictions, output_name)
-        upload_entry(output_name)
+        upload_entry(output_name, len(predictions) > 0)
     elif param == 'process_multiple':
         to_process = list(range(1, 51))
         for folder_name in to_process:
@@ -100,7 +100,7 @@ def upload_file(file_name):
         return ""
 
 
-def upload_entry(name):
+def upload_entry(name, has_drone=False):
     simple_tracked_url = upload_file(name + '.jpeg')
     tracked_url = upload_file(name + '_labeled.jpeg')
     predicted_url = upload_file(name + '_predicted.jpeg')
@@ -114,7 +114,8 @@ def upload_entry(name):
         "name": formated_date,
         "recorded_at": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
         "jsonData": "{}",
-        "secret": SECRET
+        "secret": SECRET,
+        "drone": has_drone
     }
     url = "http://aviguardx.vercel.app/api/entries"
     response = requests.post(url, data)
