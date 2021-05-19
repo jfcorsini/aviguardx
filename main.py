@@ -2,6 +2,7 @@ from FRCNN_predict.predict import run_prediction
 from gnuradio.main import read_from_antennas
 from processing.main import run_processing
 from visualization.main import visualize
+import json
 import boto3
 import requests
 import datetime
@@ -107,7 +108,7 @@ def upload_entry(name, has_drone=False):
     predicted_url = upload_file(name + '_predicted.jpeg')
     map_url = upload_file(name + '_map.jpeg')
     formated_date = datetime.datetime.fromtimestamp(int(name)).strftime('%c')
-    data = {
+    data = json.dumps({
         "map_url": map_url,
         "tracked_url": tracked_url,
         "predicted_url": predicted_url,
@@ -117,7 +118,7 @@ def upload_entry(name, has_drone=False):
         "jsonData": "{}",
         "secret": SECRET,
         "drone": has_drone
-    }
+    })
     url = "http://aviguardx.vercel.app/api/entries"
     response = requests.post(url, data)
     print('response', response)
