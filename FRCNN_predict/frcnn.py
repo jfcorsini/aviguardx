@@ -25,7 +25,7 @@ class FRCNN(object):
         "confidence": 0.5,
         "iou": 0.3,
         "backbone": "resnet50",
-        "cuda": False,
+        "cuda": True,
     }
 
     @classmethod
