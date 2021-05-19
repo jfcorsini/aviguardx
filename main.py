@@ -50,6 +50,8 @@ def main():
         return run_processing(output_name)
     elif param == 'ui':
         return visualize([], output_name)
+    elif param == 'upload':
+        return upload_entry(output_name, True)
     elif param == 'do':
         run_processing(output_name)
         predictions = run_prediction(output_name)
