@@ -110,7 +110,7 @@ def upload_entry(name, has_drone=False):
     predicted_url = upload_file(name + '_predicted.jpeg')
     map_url = upload_file(name + '_map.jpeg')
     formated_date = datetime.datetime.fromtimestamp(int(name)).strftime('%c')
-    data = json.dumps({
+    data = {
         "map_url": map_url,
         "tracked_url": tracked_url,
         "predicted_url": predicted_url,
@@ -120,10 +120,11 @@ def upload_entry(name, has_drone=False):
         "jsonData": "{}",
         "secret": SECRET,
         "drone": has_drone
-    })
+    }
     print('This is data', data)
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     url = "http://aviguardx.vercel.app/api/entries"
-    response = requests.post(url, data)
+    response = requests.post(url, data=json.dumps(data), headers=headers)
     print('response', response)
     print('json response', response.json())
     return
