@@ -119,6 +119,7 @@ def upload_entry(name, has_drone=False):
         "secret": SECRET,
         "drone": has_drone
     })
+    print('This is data', data)
     url = "http://aviguardx.vercel.app/api/entries"
     response = requests.post(url, data)
     print('response', response)
