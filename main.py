@@ -70,6 +70,7 @@ def main():
         run_processing(output_name)
         predictions = run_prediction(output_name)
         visualize(predictions, output_name)
+        upload_entry(output_name)
 
 
 def update_status(status):
