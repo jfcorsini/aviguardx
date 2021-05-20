@@ -1,11 +1,11 @@
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+from matplotlib import patheffects as pe
+
 from PIL import Image
-import numpy as np
 import os
 import math
-from time import sleep
-import matplotlib.patheffects as pe
-import matplotlib as mpl
 
 from math import pi, cos, sin
 
