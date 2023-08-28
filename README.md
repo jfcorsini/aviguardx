@@ -2,6 +2,8 @@
 
 This repository contains the work for identifying and detecting flying objects using two antennas. This was done for a [Product Development Project course](http://pdp.fi/) at Aalto University.
 
+The code responsible for building the website where the final images were displayed can be found [here](https://github.com/jfcorsini/aviguardx-app).
+
 The structure of this project is split into multiple submodules:
 
 - **gnuradio**: Contains the GNURadio file that was used to process data from a KerberosSDR device, which uses 2 RTL-SDR dongles. This repository also contains a logic to run the data acquisition for a few seconds to capture some data into a specific folder.
